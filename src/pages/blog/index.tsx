@@ -56,8 +56,11 @@ const Index = ({ posts = [], preview }) => {
           <div className={blogStyles.previewAlert}>
             <b>Note:</b>
             {` `}Viewing in preview mode{' '}
-            <Link href={`/api/clear-preview`}>
-              <button className={blogStyles.escapePreview}>Exit Preview</button>
+            <Link
+              href={`/api/clear-preview`}
+              className={blogStyles.escapePreview}
+            >
+              Exit Preview
             </Link>
           </div>
         </div>

@@ -47,7 +47,7 @@ export async function getStaticProps({ params: { slug }, preview }) {
         const res = await fetch(
           `https://api.twitter.com/1/statuses/oembed.json?id=${tweetId}`
         )
-        const json = await res.json()
+        const json = (await res.json()) as { html: string }
         properties.html = json.html.split('<script')[0]
         post.hasTweet = true
       } catch (_) {
@@ -144,8 +144,11 @@ const RenderPost = ({ post, redirect, preview }) => {
           <div className={blogStyles.previewAlert}>
             <b>Note:</b>
             {` `}Viewing in preview mode{' '}
-            <Link href={`/api/clear-preview?slug=${post.Slug}`}>
-              <button className={blogStyles.escapePreview}>Exit Preview</button>
+            <Link
+              href={`/api/clear-preview?slug=${post.Slug}`}
+              className={blogStyles.escapePreview}
+            >
+              Exit Preview
             </Link>
           </div>
         </div>
