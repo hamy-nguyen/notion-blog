@@ -5,6 +5,12 @@ import { getPostPreview } from './getPostPreview'
 import { readFile, writeFile } from '../fs-helpers'
 import { BLOG_INDEX_ID, BLOG_INDEX_CACHE } from './server-constants'
 
+interface NotionResponse {
+  recordMap: {
+    block: Record<string, any>
+  }
+}
+
 export default async function getBlogIndex(previews = true) {
   let postsTable: any = null
   const useCache = process.env.USE_CACHE === 'true'
@@ -26,7 +32,7 @@ export default async function getBlogIndex(previews = true) {
         cursor: { stack: [] },
         chunkNumber: 0,
         verticalColumns: false,
-      })
+      }) as NotionResponse
 
       // Parse table with posts
       const tableBlock = values(data.recordMap.block).find(
