@@ -17,13 +17,13 @@
     "async-sema": "3.1.0",
     "github-slugger": "1.2.1",
     "katex": "0.12.0",
-    "lucide-react": "^0.511.0",
+    "lucide-react": "^0.294.0",
     "next": "^15.1.8",
     "node-fetch": "2",
     "path": "^0.12.7",
     "prismjs": "1.17.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "uuid": "8.1.0"
   },
   "devDependencies": {
@@ -33,7 +33,7 @@
     "lint-staged": "10.5.4",
     "pre-commit": "1.2.2",
     "prettier": "2.2.1",
-    "typescript": "^4.4.4"
+    "typescript": "^4.5.2"
   },
   "packageManager": "pnpm@9.14.2+sha512.6e2baf77d06b9362294152c851c4f278ede37ab1eba3a55fda317a4a17b209f4dbb973fb250a77abc463a341fcb1f17f17cfa24091c4eb319cda0d9b84278387"
 }
