@@ -43,11 +43,24 @@ if (!BLOG_INDEX_ID) {
 
 module.exports = {
   webpack(cfg, { dev, isServer }) {
-    // only compile build-rss in production server build
     if (dev || !isServer) return cfg
 
-    // we're in build mode so enable shared caching for Notion data
     process.env.USE_CACHE = 'true'
+
+    cfg.resolve.fallback = {
+      ...cfg.resolve.fallback,
+      fs: false,
+      path: false,
+      util: false,
+      os: false,
+      crypto: false,
+      stream: false,
+      buffer: false,
+      process: false
+    }
+
+    // Add global variables for Node.js environment
+    cfg.output.globalObject = 'this'
 
     const originalEntry = cfg.entry
     cfg.entry = async () => {

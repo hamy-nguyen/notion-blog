@@ -1,113 +1,77 @@
-import { resolve } from 'path'
-import { writeFile } from './fs-helpers'
-import { renderToStaticMarkup } from 'react-dom/server'
-
-import { textBlock } from './notion/renderers'
-import getBlogIndex from './notion/getBlogIndex'
+import { promises as fs } from 'fs'
+import path from 'path'
+import { getBlogLink } from './blog-helpers'
 import getNotionUsers from './notion/getNotionUsers'
-import { postIsPublished, getBlogLink } from './blog-helpers'
-import { loadEnvConfig } from '@next/env'
-import serverConstants from './notion/server-constants'
+import getBlogIndex from './notion/getBlogIndex'
+import getTableData from './notion/getTableData'
 
-// must use weird syntax to bypass auto replacing of NODE_ENV
-process.env['NODE' + '_ENV'] = 'production'
-process.env.USE_CACHE = 'true'
+const DOMAIN = 'https://notion-blog-demo.transitivebullsh.it'
 
-// constants
-const NOW = new Date().toJSON()
-
-function mapToAuthor(author) {
-  return `<author><name>${author.full_name}</name></author>`
+interface Post {
+  CreatedBy: string
+  Slug: string
+  Page: string
+  Excerpt?: string
+  Content: string
+  Date: string
+  id?: string
+  preview?: any[]
 }
 
-function decode(string) {
-  return string
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;')
+interface NotionUser {
+  full_name: string
 }
 
-function mapToEntry(post) {
-  return `
-    <entry>
-      <id>${post.link}</id>
-      <title>${decode(post.title)}</title>
-      <link href="${post.link}"/>
-      <updated>${new Date(post.date).toJSON()}</updated>
-      <content type="xhtml">
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          ${renderToStaticMarkup(
-            post.preview
-              ? (post.preview || []).map((block, idx) =>
-                  textBlock(block, false, post.title + idx)
-                )
-              : post.content
-          )}
-          <p class="more">
-            <a href="${post.link}">Read more</a>
-          </p>
-        </div>
-      </content>
-      ${(post.authors || []).map(mapToAuthor).join('\n      ')}
-    </entry>`
-}
+export async function generateRss() {
+  const postsTable = await getBlogIndex()
+  const authorsToGet = new Set<string>()
+  const posts = postsTable as Record<string, Post>
 
-function concat(total, item) {
-  return total + item
-}
-
-function createRSS(blogPosts = []) {
-  const postsString = blogPosts.map(mapToEntry).reduce(concat, '')
-
-  return `<?xml version="1.0" encoding="utf-8"?>
-  <feed xmlns="http://www.w3.org/2005/Atom">
-    <title>My Blog</title>
-    <subtitle>Blog</subtitle>
-    <link href="/atom" rel="self" type="application/rss+xml"/>
-    <link href="/" />
-    <updated>${NOW}</updated>
-    <id>My Notion Blog</id>${postsString}
-  </feed>`
-}
-
-async function main() {
-  await loadEnvConfig(process.cwd())
-  serverConstants.NOTION_TOKEN = process.env.NOTION_TOKEN
-  serverConstants.BLOG_INDEX_ID = serverConstants.normalizeId(
-    process.env.BLOG_INDEX_ID
-  )
-
-  const postsTable = await getBlogIndex(true)
-  const neededAuthors = new Set<string>()
-
-  const blogPosts = Object.keys(postsTable)
-    .map((slug) => {
-      const post = postsTable[slug]
-      if (!postIsPublished(post)) return
-
-      post.authors = post.Authors || []
-
-      for (const author of post.authors) {
-        neededAuthors.add(author)
-      }
-      return post
-    })
-    .filter(Boolean)
-
-  const { users } = await getNotionUsers([...neededAuthors])
-
-  blogPosts.forEach((post) => {
-    post.authors = post.authors.map((id) => users[id])
-    post.link = getBlogLink(post.Slug)
-    post.title = post.Page
-    post.date = post.Date
+  Object.values(posts).forEach(post => {
+    const createdBy = post.CreatedBy
+    if (createdBy) {
+      authorsToGet.add(createdBy)
+    }
   })
 
-  const outputPath = './public/atom'
-  await writeFile(resolve(outputPath), createRSS(blogPosts))
-  console.log(`Atom feed file generated at \`${outputPath}\``)
+  const { users } = await getNotionUsers([...authorsToGet])
+
+  const rss = `
+    <rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+      <channel>
+        <title>Transitive Bullshit</title>
+        <link>${DOMAIN}</link>
+        <description>Personal site of Travis Fischer – I'm a developer, writer, and creator.</description>
+        <language>en</language>
+        <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+        <atom:link href="${DOMAIN}/rss.xml" rel="self" type="application/rss+xml"/>
+        ${Object.values(posts)
+          .map(post => {
+            const author = users[post.CreatedBy]
+            if (!author) {
+              throw new Error(`Author not found for ${post.Slug}`)
+            }
+
+            return `
+              <item>
+                <guid>${DOMAIN}${getBlogLink(post.Slug)}</guid>
+                <title>${post.Page}</title>
+                <link>${DOMAIN}${getBlogLink(post.Slug)}</link>
+                <description>${post.Excerpt || ''}</description>
+                <content:encoded><![CDATA[${post.Content}]]></content:encoded>
+                <dc:creator>${author.full_name}</dc:creator>
+                <pubDate>${new Date(post.Date).toUTCString()}</pubDate>
+              </item>
+            `
+          })
+          .join('')}
+      </channel>
+    </rss>
+  `.trim()
+
+  const publicDir = path.join(process.cwd(), 'public')
+  await fs.mkdir(publicDir, { recursive: true })
+  await fs.writeFile(path.join(publicDir, 'rss.xml'), rss)
 }
 
-main().catch((error) => console.error(error))
+export default generateRss
