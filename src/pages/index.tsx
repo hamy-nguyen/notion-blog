@@ -8,12 +8,6 @@ export default function Index() {
     <>
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
-        <img
-          src="/vercel-and-notion.png"
-          height="85"
-          width="250"
-          alt="Vercel + Notion"
-        />
         <h1>Grace's Miraculous Ordinaries</h1>
         <h2>An archive of my thoughts.</h2>
 
