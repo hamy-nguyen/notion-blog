@@ -17,7 +17,11 @@
 
 # misc
 .DS_Store
-.env.local*
+# WHY: the template only ignored .env.local*, so the committed .env leaked real
+# credentials. Ignore every .env variant and allow-list the checked-in example.
+.env
+.env.*
+!.env.example
 
 # debug
 npm-debug.log*

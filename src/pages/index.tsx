@@ -1,5 +1,4 @@
 import Header from '../components/header'
-import ExtLink from '../components/ext-link'
 import Features from '../components/features'
 import sharedStyles from '../styles/shared.module.css'
 
@@ -9,41 +8,24 @@ export default function Index() {
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
         <h1>Grace's Miraculous Ordinaries</h1>
-        <h2>An archive of my thoughts.</h2>
+        <h2>Reflections and notes on what I observe, read, and watch.</h2>
 
         <Features />
 
         <div className="explanation">
           <p>
-            This is a statically generated{' '}
-            <ExtLink href="https://nextjs.org">Next.js</ExtLink> site with a{' '}
-            <ExtLink href="https://notion.so">Notion</ExtLink> powered blog that
-            is deployed with <ExtLink href="https://vercel.com">Vercel</ExtLink>
-            . It leverages some upcoming features in Next.js like{' '}
-            <ExtLink href="https://github.com/vercel/next.js/issues/9524">
-              SSG support
-            </ExtLink>{' '}
-            and{' '}
-            <ExtLink href="https://github.com/vercel/next.js/issues/8626">
-              built-in CSS support
-            </ExtLink>{' '}
-            which allow us to achieve all of the benefits listed above including
-            blazing fast speeds, great local editing experience, and always
-            being available!
+            This is a slow archive — somewhere to set things down before they
+            slip. Most of what ends up here starts small: a note in the margin
+            of a book, a half-thought on a walk, a scene I couldn't stop turning
+            over. What survives a second reading gets written out properly.
           </p>
 
           <p>
-            Get started by creating a new page in Notion and clicking the deploy
-            button below. After you supply your token and the blog index id (the
-            page's id in Notion) we will automatically create the table for you!
-            See{' '}
-            <ExtLink href="https://github.com/ijjk/notion-blog#getting-blog-index-and-token">
-              here in the readme
-            </ExtLink>{' '}
-            for finding the new page's id. To get your token from Notion, login
-            and look for a cookie under www.notion.so with the name `token_v2`.
-            After finding your token and your blog's page id you should be good
-            to go!
+            None of it is meant to be finished or authoritative. These are
+            working notes, and they live wherever each kind of writing is most
+            at home — longer reflections on Substack, a reading log in Notion,
+            everyday fragments on Instagram, and what I'm formally studying in
+            my learning portfolio. The four links above will take you to each.
           </p>
         </div>
       </div>

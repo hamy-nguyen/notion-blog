@@ -212,6 +212,15 @@ pre.dark[class*='language-'] {
   display: inline-flex;
   padding: 0 0.5rem 1.5rem;
   margin: 0 auto;
+  /* WHY: these are now anchors, so they'd pick up the global blue link color.
+     Four blue cards read as an error state; inherit instead and save the color
+     shift for hover, which is where the click affordance actually matters. */
+  color: inherit;
+  transition: color 200ms ease;
+}
+
+.feature:hover {
+  color: #0070f3;
 }
 
 .feature h4 {

@@ -6,11 +6,8 @@ import styles from '../styles/header.module.css'
 
 const navItems: { label: string; page?: string; link?: string }[] = [
   { label: 'Home', page: '/' },
-  { label: 'Blog', page: '/blog' },
   { label: 'Contact', page: '/contact' },
 ]
-
-const ogImageUrl = 'https://notion-blog.now.sh/og-image.png'
 
 const Header = ({ titlePre = '' }) => {
   const { pathname } = useRouter()
@@ -21,13 +18,16 @@ const Header = ({ titlePre = '' }) => {
         <title>{`${titlePre ? `${titlePre} |` : ''} Grace's Ordinaries`}</title>
         <meta
           name="description"
-          content="An archive of my miraculous ordinariness."
+          content="Reflections and notes on what I observe, read, and watch."
         />
+        {/* WHY: no og:image/twitter:image tags at all, rather than tags
+            pointing at a missing file. A broken image URL makes some scrapers
+            render an empty preview card; with no tag they fall back to the
+            title and description, which is the better degraded state.
+            Add a real image here when there is one. */}
         <meta name="og:title" content="Grace's Ordinaries" />
-        <meta property="og:image" content={ogImageUrl} />
-        <meta name="twitter:site" content="@_ijjk" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content={ogImageUrl} />
+        <meta name="og:description" content="Reflections and notes on what I observe, read, and watch." />
+        <meta name="twitter:card" content="summary" />
       </Head>
       <ul>
         {navItems.map(({ label, page, link }) => (
