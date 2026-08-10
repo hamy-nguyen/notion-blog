@@ -14,18 +14,19 @@ export default function Index() {
 
         <div className="explanation">
           <p>
-            This is a slow archive — somewhere to set things down before they
+            This is a slow archive, somewhere to set things down before they
             slip. Most of what ends up here starts small: a note in the margin
             of a book, a half-thought on a walk, a scene I couldn't stop turning
-            over. What survives a second reading gets written out properly.
+            over. Sooner or later the ones that stay with me get written out.
           </p>
 
           <p>
-            None of it is meant to be finished or authoritative. These are
-            working notes, and they live wherever each kind of writing is most
-            at home — longer reflections on Substack, a reading log in Notion,
-            everyday fragments on Instagram, and what I'm formally studying in
-            my learning portfolio. The four links above will take you to each.
+            Nothing here is a draft waiting on a better version. Each piece is
+            what I meant it to be, in whatever voice it came out in. They live
+            wherever each kind of writing is most at home: longer reflections
+            on Substack, a reading log in Notion, everyday fragments on
+            Instagram, and what I'm formally studying in my learning portfolio.
+            The four links above will take you to each.
           </p>
         </div>
       </div>
