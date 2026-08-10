@@ -28,7 +28,15 @@ const Header = ({ titlePre = '' }) => {
         <meta name="og:title" content="Grace's Ordinaries" />
         <meta name="og:description" content="Reflections and notes on what I observe, read, and watch." />
         <meta name="twitter:card" content="summary" />
+        {/* WHY: an SVG favicon renders the emoji with whatever emoji font the
+            reader's OS has, so there's no image file to keep in sync. Older
+            browsers that ignore SVG icons just fall back to no favicon, which
+            is what the site had anyway. */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </Head>
+      <Link href="/" className={styles.mark} aria-label="Home">
+        <span aria-hidden="true">✨</span>
+      </Link>
       <ul>
         {navItems.map(({ label, page, link }) => (
           <li key={label}>

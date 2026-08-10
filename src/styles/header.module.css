@@ -6,6 +6,20 @@
   letter-spacing: -0.02em;
 }
 
+.mark {
+  display: block;
+  font-size: 1.75rem;
+  line-height: 1;
+  /* WHY: emoji glyphs carry their own colour, so the header's grey link rule
+     can't tint it. Only the hover opacity signals it's clickable. */
+  opacity: 0.9;
+  transition: opacity 200ms ease;
+}
+
+.mark:hover {
+  opacity: 1;
+}
+
 .header ul {
   list-style: none;
   padding: 0;
