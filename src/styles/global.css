@@ -366,20 +366,20 @@ code {
   border-bottom: 1px dashed black;
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 footer {
   padding: 2em 0;
   text-align: center;
-}
-
-footer img {
-  display: block;
-  margin: 0.5rem auto;
-}
-
-footer span:nth-child(3) {
-  color: #777777;
-}
-
-footer span:nth-child(3) a {
-  color: inherit;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--accents-3);
+  /* WHY: auto margin eats the leftover space in the .app column, so the
+     footer lands on the bottom edge when a page is short and simply follows
+     the content when it isn't. */
+  margin-top: auto;
 }
