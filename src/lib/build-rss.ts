@@ -1,94 +1,105 @@
-import { promises as fs } from 'fs'
-import path from 'path'
 import { getBlogLink } from './blog-helpers'
 import getNotionUsers from './notion/getNotionUsers'
 import getBlogIndex from './notion/getBlogIndex'
-import getTableData from './notion/getTableData'
-
-// WHY: RSS items must carry absolute URLs, so this has to be the deployed
-// origin. Reading it from env rather than hardcoding means moving domains is a
-// deploy setting, not a commit. On Vercel the production hostname is already in
-// the build env, so setting SITE_URL by hand is only needed elsewhere.
-const DOMAIN =
-  process.env.SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'http://localhost:3000')
 
 interface Post {
-  CreatedBy: string
+  // WHY: Authors is the person column on the Notion database and holds user
+  // ids, not names — the same field pages/blog/[slug].tsx resolves. There is
+  // no CreatedBy column, which is what the original feed code read.
+  Authors?: string[]
   Slug: string
   Page: string
   Excerpt?: string
-  Content: string
+  Content?: string
   Date: string
   id?: string
   preview?: any[]
 }
 
-interface NotionUser {
-  full_name: string
+// WHY: post titles and excerpts are arbitrary prose from Notion, so an
+// ampersand or a quote in one of them is enough to make the whole feed
+// unparseable. Every interpolated value goes through here.
+const escapeXml = (value: unknown) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+
+// WHY: CDATA ends at the first ]]>, so post content containing that sequence
+// would close the block early and spill markup into the document. Splitting it
+// across two CDATA sections preserves the literal text.
+const escapeCdata = (value: unknown) =>
+  String(value ?? '').replace(/]]>/g, ']]]]><![CDATA[>')
+
+const toPubDate = (value: string) => {
+  const date = new Date(Number(value) || value)
+  return isNaN(date.getTime()) ? '' : date.toUTCString()
 }
 
-export async function generateRss() {
-  const postsTable = await getBlogIndex()
+/**
+ * Builds the RSS document. `origin` is the absolute base URL every link in the
+ * feed hangs off, e.g. https://example.com — RSS has no notion of relative
+ * paths, so the caller has to say where the site actually lives.
+ */
+export async function generateRssXml(origin: string): Promise<string> {
+  const postsTable = (await getBlogIndex(false)) as Record<string, Post>
   const authorsToGet = new Set<string>()
-  const posts = postsTable as Record<string, Post>
 
-  Object.values(posts).forEach(post => {
-    const createdBy = post.CreatedBy
-    if (createdBy) {
-      authorsToGet.add(createdBy)
-    }
+  Object.values(postsTable).forEach((post) => {
+    ;(post.Authors || []).forEach((id) => authorsToGet.add(id))
   })
 
   const { users } = await getNotionUsers([...authorsToGet])
 
-  const rss = `
-    <rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
-      <channel>
-        <title>Grace's Miraculous Ordinaries</title>
-        <link>${DOMAIN}</link>
-        <description>Reflections and notes on what I observe, read, and watch.</description>
-        <language>en</language>
-        <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-        <atom:link href="${DOMAIN}/rss.xml" rel="self" type="application/rss+xml"/>
-        ${Object.values(posts)
-          .map(post => {
-            const author = users[post.CreatedBy]
-            if (!author) {
-              throw new Error(`Author not found for ${post.Slug}`)
-            }
+  const items = Object.values(postsTable)
+    .filter((post) => post.Slug)
+    .sort((a, b) => Number(b.Date) - Number(a.Date))
+    .map((post) => {
+      const url = `${origin}${getBlogLink(post.Slug)}`
+      // WHY: a deleted Notion user, or one the token can't resolve, used to
+      // throw and take the entire feed down with it. dc:creator is optional in
+      // RSS, so an unknown author costs one tag, not the document.
+      const authors = (post.Authors || [])
+        .map((id) => users[id]?.full_name)
+        .filter(Boolean)
+      const pubDate = toPubDate(post.Date)
 
-            return `
-              <item>
-                <guid>${DOMAIN}${getBlogLink(post.Slug)}</guid>
-                <title>${post.Page}</title>
-                <link>${DOMAIN}${getBlogLink(post.Slug)}</link>
-                <description>${post.Excerpt || ''}</description>
-                <content:encoded><![CDATA[${post.Content}]]></content:encoded>
-                <dc:creator>${author.full_name}</dc:creator>
-                <pubDate>${new Date(post.Date).toUTCString()}</pubDate>
-              </item>
-            `
-          })
+      return `
+      <item>
+        <guid isPermaLink="true">${escapeXml(url)}</guid>
+        <title>${escapeXml(post.Page)}</title>
+        <link>${escapeXml(url)}</link>
+        <description>${escapeXml(post.Excerpt || '')}</description>
+        ${
+          post.Content
+            ? `<content:encoded><![CDATA[${escapeCdata(
+                post.Content
+              )}]]></content:encoded>`
+            : ''
+        }
+        ${authors
+          .map((name) => `<dc:creator>${escapeXml(name)}</dc:creator>`)
           .join('')}
-      </channel>
-    </rss>
-  `.trim()
+        ${pubDate ? `<pubDate>${pubDate}</pubDate>` : ''}
+      </item>`
+    })
+    .join('')
 
-  const publicDir = path.join(process.cwd(), 'public')
-  await fs.mkdir(publicDir, { recursive: true })
-  await fs.writeFile(path.join(publicDir, 'rss.xml'), rss)
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Grace's Miraculous Ordinaries</title>
+    <link>${escapeXml(origin)}</link>
+    <description>Reflections and notes on what I observe, read, and watch.</description>
+    <language>en</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <atom:link href="${escapeXml(
+      `${origin}/rss.xml`
+    )}" rel="self" type="application/rss+xml"/>${items}
+  </channel>
+</rss>`
 }
 
-export default generateRss
-
-// WHY: this file is a build entry, run by `node .next/server/build-rss.js`
-// after next build — nothing imports it. Without this call it defined the
-// function, exited 0, and wrote no feed, which is how a broken RSS step
-// passed every build since the rewrite in 0058fb0.
-generateRss().catch((err) => {
-  console.error('Failed to generate rss.xml:', err)
-  process.exit(1)
-})
+export default generateRssXml

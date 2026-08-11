@@ -34,6 +34,14 @@ const Header = ({ titlePre = '' }) => {
             browsers that ignore SVG icons just fall back to no favicon, which
             is what the site had anyway. */}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        {/* WHY: this is how feed readers discover the feed from any page —
+            without it, subscribing means knowing to type /rss.xml by hand. */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Grace's Miraculous Ordinaries"
+          href="/rss.xml"
+        />
       </Head>
       <Link href="/" className={styles.mark} aria-label="Home">
         <span aria-hidden="true">✨</span>

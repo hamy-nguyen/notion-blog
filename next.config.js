@@ -45,29 +45,15 @@ module.exports = {
   webpack(cfg, { dev, isServer }) {
     if (dev || !isServer) return cfg
 
+    // WHY: lets getBlogIndex cache the index to .blog_index_data for the rest
+    // of the build, so generating N post pages doesn't refetch it N times.
     process.env.USE_CACHE = 'true'
 
-    cfg.resolve.fallback = {
-      ...cfg.resolve.fallback,
-      fs: false,
-      path: false,
-      util: false,
-      os: false,
-      crypto: false,
-      stream: false,
-      buffer: false,
-      process: false
-    }
-
-    // Add global variables for Node.js environment
-    cfg.output.globalObject = 'this'
-
-    const originalEntry = cfg.entry
-    cfg.entry = async () => {
-      const entries = { ...(await originalEntry()) }
-      entries['build-rss.js'] = './src/lib/build-rss.ts'
-      return entries
-    }
+    // WHY: the custom `build-rss.js` entry that used to be injected here is
+    // gone. Next 15 emitted it as a webpack chunk registered under
+    // _ENTRIES[...], not a runnable script, so `node .next/server/build-rss.js`
+    // loaded it and exited 0 without ever writing a feed. The feed is now
+    // served by pages/rss.xml.tsx at request time instead.
     return cfg
   },
 }
