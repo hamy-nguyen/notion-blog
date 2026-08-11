@@ -41,9 +41,9 @@ export default async function getBlogIndex(previews = true) {
 
       postsTable = await getTableData(tableBlock, true)
     } catch (err) {
-      console.warn(
-        `Failed to load Notion posts, have you run the create-table script?`
-      )
+      // WHY: the original message guessed at a single cause and threw the real
+      // error away, so an auth or network failure read as a missing table.
+      console.warn('Failed to load Notion posts:', err)
       return {}
     }
 

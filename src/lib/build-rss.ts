@@ -5,9 +5,15 @@ import getNotionUsers from './notion/getNotionUsers'
 import getBlogIndex from './notion/getBlogIndex'
 import getTableData from './notion/getTableData'
 
-// WHY: absolute URLs are required in RSS, so this has to be the deployed
-// origin. Set it before publishing the feed or every link in it 404s.
-const DOMAIN = 'https://example.com'
+// WHY: RSS items must carry absolute URLs, so this has to be the deployed
+// origin. Reading it from env rather than hardcoding means moving domains is a
+// deploy setting, not a commit. On Vercel the production hostname is already in
+// the build env, so setting SITE_URL by hand is only needed elsewhere.
+const DOMAIN =
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : 'http://localhost:3000')
 
 interface Post {
   CreatedBy: string
@@ -77,3 +83,12 @@ export async function generateRss() {
 }
 
 export default generateRss
+
+// WHY: this file is a build entry, run by `node .next/server/build-rss.js`
+// after next build — nothing imports it. Without this call it defined the
+// function, exited 0, and wrote no feed, which is how a broken RSS step
+// passed every build since the rewrite in 0058fb0.
+generateRss().catch((err) => {
+  console.error('Failed to generate rss.xml:', err)
+  process.exit(1)
+})
