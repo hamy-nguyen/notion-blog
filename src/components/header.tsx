@@ -47,7 +47,7 @@ const Header = ({ titlePre = '' }) => {
         />
       </Head>
       <Link href="/" className={styles.mark} aria-label="Home">
-        <span aria-hidden="true">⋆｡˚ 𓆝⋆｡˚</span>
+        <span aria-hidden="true">✨</span>
       </Link>
       <ul>
         {navItems.map(({ label, page, link }) => (
