@@ -241,6 +241,32 @@ pre.dark[class*='language-'] {
   }
 }
 
+/* WHY: every card below leaves the site. The blog is the one thing hosted
+   here, so it gets its own affordance instead of becoming a fifth card that
+   reads as another link out. */
+.readHere {
+  display: block;
+  width: fit-content;
+  margin: var(--gap-double) auto 0;
+  padding: var(--gap-half) var(--gap);
+  border: 1px solid #eaeaea;
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 0.9rem;
+  color: var(--fg);
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.readHere:hover {
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+.readHere span {
+  color: var(--accents-3);
+  padding-left: var(--gap-quarter);
+}
+
 .explanation {
   font-size: 1rem;
   width: 35rem;
