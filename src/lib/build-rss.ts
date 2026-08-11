@@ -90,7 +90,7 @@ export async function generateRssXml(origin: string): Promise<string> {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
-    <title>Grace's Miraculous Ordinaries</title>
+    <title>Miraculous Ordinaries</title>
     <link>${escapeXml(origin)}</link>
     <description>Reflections and notes on what I observe, read, and watch.</description>
     <language>en</language>

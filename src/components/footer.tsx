@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer>
-      <span>a free thinker</span>
+      <span>free thinker</span>
     </footer>
   )
 }

@@ -8,7 +8,7 @@ export default function Index() {
     <>
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
-        <h1>Grace's Miraculous Ordinaries</h1>
+        <h1>Miraculous Ordinaries</h1>
         <h2>Reflections and notes on what I observe, read, and watch.</h2>
 
         {/* WHY: the intro used to sit below the four link cards, so the page

@@ -27,7 +27,10 @@ const Header = ({ titlePre = '' }) => {
             title and description, which is the better degraded state.
             Add a real image here when there is one. */}
         <meta name="og:title" content="Grace's Ordinaries" />
-        <meta name="og:description" content="Reflections and notes on what I observe, read, and watch." />
+        <meta
+          name="og:description"
+          content="Reflections and notes on what I observe, read, and watch."
+        />
         <meta name="twitter:card" content="summary" />
         {/* WHY: an SVG favicon renders the emoji with whatever emoji font the
             reader's OS has, so there's no image file to keep in sync. Older
@@ -39,12 +42,12 @@ const Header = ({ titlePre = '' }) => {
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="Grace's Miraculous Ordinaries"
+          title="Miraculous Ordinaries"
           href="/rss.xml"
         />
       </Head>
       <Link href="/" className={styles.mark} aria-label="Home">
-        <span aria-hidden="true">✨</span>
+        <span aria-hidden="true">⋆｡˚ 𓆝⋆｡˚</span>
       </Link>
       <ul>
         {navItems.map(({ label, page, link }) => (
