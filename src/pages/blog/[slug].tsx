@@ -6,6 +6,7 @@ import Heading from '../../components/heading'
 import components from '../../components/dynamic'
 import ReactJSXParser from '@zeit/react-jsx-parser'
 import blogStyles from '../../styles/blog.module.css'
+import sharedStyles from '../../styles/shared.module.css'
 import { textBlock } from '../../lib/notion/renderers'
 import getPageData from '../../lib/notion/getPageData'
 import React, { CSSProperties, useEffect } from 'react'
@@ -128,7 +129,7 @@ const RenderPost = ({ post, redirect, preview }) => {
   // loading one from fallback then  redirect back to the index
   if (!post) {
     return (
-      <div className={blogStyles.post}>
+      <div className={`${sharedStyles.layout} ${blogStyles.post}`}>
         <p>
           Woops! didn't find that post, redirecting you back to the blog index
         </p>
@@ -153,7 +154,7 @@ const RenderPost = ({ post, redirect, preview }) => {
           </div>
         </div>
       )}
-      <div className={blogStyles.post}>
+      <div className={`${sharedStyles.layout} ${blogStyles.post}`}>
         <h1>{post.Page || ''}</h1>
         {post.Authors.length > 0 && (
           <div className="authors">By: {post.Authors.join(' ')}</div>

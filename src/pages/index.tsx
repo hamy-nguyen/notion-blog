@@ -11,12 +11,10 @@ export default function Index() {
         <h1>Grace's Miraculous Ordinaries</h1>
         <h2>Reflections and notes on what I observe, read, and watch.</h2>
 
-        <Link href="/blog" className="readHere">
-          Read what's written here<span>→</span>
-        </Link>
-
-        <Features />
-
+        {/* WHY: the intro used to sit below the four link cards, so the page
+            showed you the destinations before saying what any of it was. It
+            reads top to bottom now: what this is, then what to read here,
+            then where the rest lives. */}
         <div className="explanation">
           <p>
             This is a slow archive, somewhere to set things down before they
@@ -28,12 +26,18 @@ export default function Index() {
           <p>
             Nothing here is a draft waiting on a better version. Each piece is
             what I meant it to be, in whatever voice it came out in. They live
-            wherever each kind of writing is most at home: longer reflections
-            on Substack, a reading log in Notion, everyday fragments on
-            Instagram, and what I'm formally studying in my learning portfolio.
-            The four links above will take you to each.
+            wherever each kind of writing is most at home, and the links below
+            will take you to each.
           </p>
         </div>
+
+        <Link href="/blog" className="readHere">
+          Read what's written here<span>→</span>
+        </Link>
+
+        <div className="sectionLabel">Elsewhere</div>
+
+        <Features />
       </div>
     </>
   )

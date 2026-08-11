@@ -198,82 +198,99 @@ pre.dark[class*='language-'] {
   align-items: center;
 }
 
+/* WHY: a 2-column grid instead of four flex items at 25%. The old row let each
+   card size to its own text, so the gaps between them were all different
+   widths — the labels ran from "Books" to "Learning Portfolio" and the spacing
+   visibly lurched. A grid gives equal columns and one gap value. */
 .features {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 4rem auto;
-  width: 920px;
-  max-width: calc(100vw - var(--gap-double));
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0 0;
 }
 
 .feature {
-  flex: 0 0 25%;
+  display: flex;
   align-items: center;
-  display: inline-flex;
-  padding: 0 0.5rem 1.5rem;
-  margin: 0 auto;
-  /* WHY: these are now anchors, so they'd pick up the global blue link color.
-     Four blue cards read as an error state; inherit instead and save the color
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #ebebeb;
+  border-radius: var(--radius);
+  /* WHY: these are anchors, so they'd pick up the global blue link color. Four
+     blue cards read as an error state; inherit instead and save the color
      shift for hover, which is where the click affordance actually matters. */
   color: inherit;
-  transition: color 200ms ease;
+  transition: border-color 200ms ease, color 200ms ease;
 }
 
 .feature:hover {
   color: #0070f3;
+  border-color: #0070f3;
 }
 
 .feature h4 {
-  margin: 0 0 0 0.5rem;
-  font-weight: 700;
-  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
   white-space: nowrap;
 }
 
-@media (max-width: 600px) {
-  .feature div {
-    flex-basis: auto;
-    padding-left: 0;
-  }
-
-  .feature h4 {
-    font-size: 0.75rem;
+@media (max-width: 700px) {
+  .features {
+    grid-template-columns: 1fr;
   }
 }
 
 /* WHY: every card below leaves the site. The blog is the one thing hosted
-   here, so it gets its own affordance instead of becoming a fifth card that
-   reads as another link out. */
+   here, so it's the one solid button on the page — filled, not outlined, so it
+   reads as the primary action rather than a fifth equal option. */
 .readHere {
   display: block;
   width: fit-content;
-  margin: var(--gap-double) auto 0;
-  padding: var(--gap-half) var(--gap);
-  border: 1px solid #eaeaea;
+  margin: 2rem auto 0;
+  padding: 0.7rem 1.4rem;
   border-radius: var(--radius);
-  background: var(--bg);
+  background: var(--fg);
   font-size: 0.9rem;
-  color: var(--fg);
-  transition: border-color 200ms ease, color 200ms ease;
+  font-weight: 500;
+  color: var(--bg);
+  transition: opacity 200ms ease;
 }
 
 .readHere:hover {
-  border-color: #0070f3;
-  color: #0070f3;
+  opacity: 0.82;
+  color: var(--bg);
 }
 
 .readHere span {
+  padding-left: var(--gap-half);
+}
+
+/* WHY: a section needs a name once the page has more than one part. The rule
+   carries the eye across the full column width, which is what makes the
+   sheet's edges feel deliberate. */
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  margin: 3rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--accents-3);
-  padding-left: var(--gap-quarter);
+}
+
+.sectionLabel::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #ebebeb;
 }
 
 .explanation {
   font-size: 1rem;
-  width: 35rem;
-  max-width: 100vw;
-  padding: 0 2rem;
-  background: var(--bg);
-  margin: var(--gap-half) auto;
+  margin: 2rem 0 0;
 }
 figure {
   font-size: 0.85rem;
@@ -312,16 +329,21 @@ mark {
   max-width: calc(100vw - var(--gap-double));
 }
 
+/* WHY: the sheet supplies the top padding now, so the old 2rem top margin here
+   stacked with it and pushed the title away from its own container. */
 h1 {
-  margin: var(--gap-double) 0 calc(0.5 * var(--gap)) 0;
+  margin: 0 0 var(--gap-half) 0;
   font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.05rem;
+  line-height: 1.15;
 }
 
 h2 {
+  margin: 0;
   font-weight: 300;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
   letter-spacing: -0.02rem;
   color: var(--accents-3);
 }
@@ -341,7 +363,7 @@ h2 {
 }
 
 p {
-  color: #555;
+  color: #444;
   font-weight: 400;
   font-size: 0.94rem;
   line-height: 1.7;
@@ -378,8 +400,8 @@ code {
 }
 
 @media (max-width: 600px) {
-  .explanation {
-    padding: 0 1rem 4rem;
+  h1 {
+    font-size: 1.75rem;
   }
 
   h2 {

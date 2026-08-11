@@ -1,9 +1,8 @@
-.blogIndex {
-  padding: 0 5%;
-}
-
+/* WHY: the shared .layout sheet already supplies the side padding. The extra
+   5% here pushed every post inward from the page's own edges, so nothing on
+   the blog index lined up with the heading above it. */
 .blogIndex h1 {
-  margin-bottom: 50px;
+  margin-bottom: 2.5rem;
 }
 
 .previewAlertContainer {
@@ -62,10 +61,18 @@
   text-align: center;
 }
 
+/* WHY: a near-black 1px rule between posts was heavier than the post titles
+   themselves. A hairline separates them without competing, and the padding
+   gives each entry room to read as one unit. */
 .postPreview {
-  max-width: 600px;
-  margin: 10px auto;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+  padding-bottom: 1.75rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.postPreview:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .postPreview:last-child {
@@ -119,18 +126,67 @@
   text-decoration: underline;
 }
 
+/* WHY: author and date are metadata, not content — same size as the excerpt
+   made the entry read as three equally important lines. */
+.postPreview :global(.authors),
 .postPreview :global(.posted) {
-  margin-bottom: 0.5em;
+  display: inline;
+  font-size: 0.8rem;
+  color: var(--accents-3);
 }
 
-.post {
-  max-width: calc(600px + 10%);
-  margin: 0 auto;
-  padding: 5%;
+.postPreview :global(.authors)::after {
+  content: '·';
+  padding: 0 0.4rem;
 }
 
+.postPreview h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+
+.postPreview p {
+  margin: 0.6rem 0 0;
+}
+
+/* WHY: the width and padding live on the shared .layout sheet now, so a post
+   sits in the same column as every other page instead of on its own. */
+.post :global(h2),
+.post :global(h3) {
+  text-align: left;
+}
+
+/* WHY: byline and date were the same weight and colour as the body, stacked on
+   two lines directly under the title, so the eye hit them before the prose. */
+.post :global(.authors),
+.post :global(.posted) {
+  display: inline;
+  font-size: 0.8rem;
+  color: var(--accents-3);
+}
+
+.post :global(.authors)::after {
+  content: '·';
+  padding: 0 0.4rem;
+}
+
+/* WHY: doubled class to outrank .layout h1's centring from shared.module.css,
+   which has equal specificity and would otherwise win on source order. A post
+   title reads as the start of the text, so it aligns with the byline and body
+   rather than floating centred above them. */
+.post.post h1 {
+  text-align: left;
+  line-height: 1.2;
+}
+
+/* WHY: the rule under the byline was the browser default — a thick inset
+   groove. A hairline at the sheet's own border colour keeps it a separator
+   rather than a feature. */
 .post :global(hr) {
-  margin-bottom: 2em;
+  border: 0;
+  border-top: 1px solid #ebebeb;
+  margin: 1.25rem 0 2rem;
 }
 
 .post :global(a + p) {

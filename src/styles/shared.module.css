@@ -1,3 +1,20 @@
+/* WHY: one column width for every page, so headings, prose and cards share a
+   left and right edge instead of each choosing their own. The dotted body
+   background then reads as a desk the page sits on, and prose never has to
+   compete with dots behind it. */
+.layout {
+  width: 100%;
+  /* WHY: 42rem minus the side padding lands the prose at roughly 75 characters
+     a line. Wider than that and the eye loses its place returning to the next
+     line; this is the whole reason the sheet has a max width at all. */
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3.5rem 3rem 3rem;
+  background: var(--bg);
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+}
+
 .layout img {
   margin: auto;
   max-width: 98%;
@@ -8,4 +25,15 @@
 .layout h1,
 .layout h2 {
   text-align: center;
+}
+
+/* WHY: below this width the sheet's side borders and rounded corners waste
+   horizontal space that the text needs, so it goes edge to edge instead. */
+@media (max-width: 700px) {
+  .layout {
+    padding: 2rem 1.25rem 2.5rem;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
 }
