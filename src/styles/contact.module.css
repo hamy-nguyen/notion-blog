@@ -27,8 +27,17 @@
   height: 120px;
 }
 
+/* WHY: this line is prose, but it's a <div>, so the global <p> rules that set
+   the home page's intro never reached it and it stayed in UI sans. Same serif,
+   size, leading and ink as the introduction — centred, since that's how the
+   page is laid out. */
 .name {
   text-align: center;
+  margin-top: 1.25rem;
+  font-family: var(--font-serif);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
 }
 
 .name a {

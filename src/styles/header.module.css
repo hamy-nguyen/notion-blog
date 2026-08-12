@@ -33,11 +33,28 @@
 .header :global(a) {
   color: var(--accents-3);
   font-weight: 400;
+  transition: color 200ms ease;
 }
 
+/* WHY: scoped to the nav list. As `.header a` it also matched the mark, and
+   `.header a` (0,1,1) outranks `.mark` (0,1,0), so setting a nav font size
+   here silently shrank the logo to nav-link size. */
+.header ul :global(a) {
+  font-size: var(--text-ui);
+}
+
+.header :global(a:hover) {
+  color: var(--ink);
+}
+
+/* WHY: the current page was marked with saturated blue, the one loud colour on
+   an otherwise quiet page. Ink plus a hairline underneath says "you are here"
+   without competing with the title. */
 .header :global(a.active) {
-  color: #0070f3;
-  font-weight: 600;
+  color: var(--ink);
+  font-weight: 500;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--ink);
 }
 
 @media (max-width: 600px) {

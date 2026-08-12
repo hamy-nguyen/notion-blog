@@ -9,7 +9,12 @@ export default function Index() {
       <Header titlePre="Home" />
       <div className={sharedStyles.layout}>
         <h1>Miraculous Ordinaries</h1>
-        <h2>Reflections and notes on what I observe, read, and watch.</h2>
+        {/* WHY: still an h2 for document outline, but the tagline class carries
+            the standfirst level. Without it this inherits the section-heading
+            size, which is the level used for headings inside a post. */}
+        <h2 className="tagline">
+          Reflections and notes on what I observe, read, and watch.
+        </h2>
 
         {/* WHY: the intro used to sit below the four link cards, so the page
             showed you the destinations before saying what any of it was. It

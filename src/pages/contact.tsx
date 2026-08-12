@@ -28,7 +28,7 @@ export default function Contact() {
         <h1 style={{ marginTop: 0 }}>Contact</h1>
 
         <div className={contactStyles.name}>
-          Say hello, or tell me what you've been contemplating.
+          Say hello, or tell me what you've been turning over.
         </div>
 
         <div className={contactStyles.links}>

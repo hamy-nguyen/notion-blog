@@ -79,25 +79,71 @@
   border-bottom: none;
 }
 
-.postPreview h3,
-.post h1 {
+/* WHY: 2.4rem is a landing-page size — right for a site title you meet once,
+   too loud above a column of body text you're about to read. A post title sits
+   just above its own prose, so it only needs to outrank it, not dominate. */
+/* WHY: a post title is a page title, the same level as "Contact" or the site
+   name — so it takes --text-h1 rather than a size of its own. */
+.post.post h1 {
+  margin: 0 0 0.55rem;
+  font-size: var(--text-h1);
+  line-height: var(--leading-tight);
+}
+
+/* WHY: 3rem above a subheading was a bigger gap than the one separating the
+   title from the whole article. Sized so the space above a heading is clearly
+   larger than the space below it, which is what groups it with its section. */
+.post :global(h2),
+.post :global(h3) {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 2.4rem 0 0.75rem;
+}
+
+.post :global(h2) {
+  font-size: var(--text-h2);
+}
+
+.post :global(h3) {
+  font-size: var(--text-h3);
+}
+
+/* WHY: body copy one notch down from the home page's. The intro there is a few
+   lines you glance at; this is a full article, where a slightly smaller face
+   and a little more leading is easier to stay inside of. Margins are set
+   explicitly so every paragraph gap is identical rather than the browser's
+   1em, which changes with font-size. */
+.post :global(p) {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  margin: 0 0 1.25rem;
+}
+
+.post :global(p:last-child) {
   margin-bottom: 0;
 }
 
-.post h1 {
-  margin-top: 0;
+.post :global(ul),
+.post :global(ol) {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  margin: 0 0 1.25rem;
+  padding-left: 1.35rem;
 }
 
-.post :global(h2),
-.post :global(h3) {
-  margin: 3rem 0 1.5rem 0;
+.post :global(li) {
+  margin-bottom: 0.35rem;
 }
 
+/* WHY: a 0.3-alpha drop shadow under every image was heavier than anything
+   else on the page. A hairline and the same rounding as the sheet keeps images
+   part of the document; the margins match the paragraph rhythm. */
 .post :global(video),
 .post :global(img),
 .post :global(.asset-wrapper) {
-  margin: 2rem auto;
-  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.3);
+  margin: 1.75rem auto;
+  border-radius: 6px;
   max-width: 100%;
   display: block;
 }
@@ -131,7 +177,7 @@
 .postPreview :global(.authors),
 .postPreview :global(.posted) {
   display: inline;
-  font-size: 0.8rem;
+  font-size: var(--text-meta);
   color: var(--accents-3);
 }
 
@@ -140,10 +186,28 @@
   padding: 0 0.4rem;
 }
 
+/* WHY: post titles were the same blue as any inline link, so a list of posts
+   read as a list of URLs. Serif ink matches the page's own headings and lets
+   the hover underline carry the affordance instead. */
 .postPreview h3 {
-  margin: 0 0 0.4rem;
-  font-size: 1.15rem;
+  margin: 0 0 0.35rem;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--text-h3);
   line-height: 1.35;
+}
+
+.postPreview h3 :global(a) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 200ms ease;
+}
+
+.postPreview h3 :global(a:hover) {
+  color: var(--ink);
+  text-decoration-color: var(--accents-3);
 }
 
 .postPreview p {
@@ -162,7 +226,7 @@
 .post :global(.authors),
 .post :global(.posted) {
   display: inline;
-  font-size: 0.8rem;
+  font-size: var(--text-meta);
   color: var(--accents-3);
 }
 
