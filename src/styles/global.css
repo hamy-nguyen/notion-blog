@@ -198,14 +198,13 @@ pre.dark[class*='language-'] {
   align-items: center;
 }
 
-/* WHY: a 2-column grid instead of four flex items at 25%. The old row let each
-   card size to its own text, so the gaps between them were all different
-   widths — the labels ran from "Books" to "Learning Portfolio" and the spacing
-   visibly lurched. A grid gives equal columns and one gap value. */
+/* WHY: one column rather than two. At five entries a 2-column grid leaves a
+   single orphan on the last row; a list takes any number of links without the
+   layout caring, and gives each row width enough to name its destination. */
 .features {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
   margin: 1rem 0 0;
 }
 
@@ -232,13 +231,16 @@ pre.dark[class*='language-'] {
   margin: 0;
   font-weight: 600;
   font-size: 0.9rem;
-  white-space: nowrap;
 }
 
-@media (max-width: 700px) {
-  .features {
-    grid-template-columns: 1fr;
-  }
+/* WHY: pushed to the far edge with an auto margin so the platform names form
+   their own aligned column, readable as a group without a second gridline. */
+.featurePlatform {
+  margin-left: auto;
+  padding-left: var(--gap);
+  font-size: 0.78rem;
+  color: var(--accents-3);
+  white-space: nowrap;
 }
 
 /* WHY: every card below leaves the site. The blog is the one thing hosted
